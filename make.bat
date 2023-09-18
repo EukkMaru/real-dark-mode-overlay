@@ -1,0 +1,1 @@
+C:\msys64\mingw64\bin\g++.exe -Wall -Wextra -g3 c:\Users\USER\Desktop\EukkMaru\Coding\real-dark-mode-overlay\main.cpp -o c:\Users\USER\Desktop\EukkMaru\Coding\real-dark-mode-overlay\output\main.exe -lgdi32 -luser32 -lgdiplus -lmsimg32
