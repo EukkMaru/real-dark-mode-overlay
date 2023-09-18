@@ -16,22 +16,19 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             RECT rect;
             GetClientRect(hwnd, &rect);
             FillRect(hdc, &rect, hBlackBrush);
+
             HRGN hRgnFull = CreateRectRgn(0, 0, rect.right, rect.bottom);
             HRGN hRgnCircle = CreateEllipticRgn(pt.x - radius, pt.y - radius, pt.x + radius, pt.y + radius);
             CombineRgn(hRgnFull, hRgnFull, hRgnCircle, RGN_DIFF);
             SetWindowRgn(hwnd, hRgnFull, TRUE);
 
-            // Create a semi-transparent brush with an alpha value (127 for half transparency in this case)
-            COLORREF semiTransparentBlack = RGB(0, 0, 0) | (127 << 24); // Alpha value is added to the top 8 bits
+            COLORREF semiTransparentBlack = RGB(0, 0, 0) | (127 << 24); 
             HBRUSH hSemiTransBrush = CreateSolidBrush(semiTransparentBlack);
-
-            // Fill the ellipse centered on the cursor using the semi-transparent brush
             Ellipse(hdc, pt.x - radius, pt.y - radius, pt.x + radius, pt.y + radius);
+            DeleteObject(hSemiTransBrush);
 
             DeleteObject(hBlackBrush);
             DeleteObject(hRgnCircle);
-            DeleteObject(hSemiTransBrush); // delete the new brush
-
         }
         return 0;
     case WM_HOTKEY:
