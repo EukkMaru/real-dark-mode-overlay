@@ -1,5 +1,25 @@
 #include <windows.h>
 
+LRESULT CALLBACK SemiWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch (uMsg) {
+    case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hwnd, &ps);
+
+            COLORREF semiTransparentBlack = RGB(0, 0, 0) | (127 << 24);
+            HBRUSH hSemiTransBrush = CreateSolidBrush(semiTransparentBlack);
+
+            RECT rect;
+            GetClientRect(hwnd, &rect);
+            FillRect(hdc, &rect, hSemiTransBrush);
+
+            DeleteObject(hSemiTransBrush); // Cleanup
+        }
+        return 0;
+    }
+}
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
     case WM_PAINT:
@@ -10,7 +30,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             POINT pt;
             GetCursorPos(&pt);
             ScreenToClient(hwnd, &pt);
-            const int radius = 100; // flashlight init
+            const int radius = 100;
             HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
 
             RECT rect;
@@ -20,15 +40,16 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             HRGN hRgnFull = CreateRectRgn(0, 0, rect.right, rect.bottom);
             HRGN hRgnCircle = CreateEllipticRgn(pt.x - radius, pt.y - radius, pt.x + radius, pt.y + radius);
             CombineRgn(hRgnFull, hRgnFull, hRgnCircle, RGN_DIFF);
-            SetWindowRgn(hwnd, hRgnFull, TRUE);
+            SetWindowRgn(hwnd, hRgnFull, TRUE);  // Create flashlight effect
 
             COLORREF semiTransparentBlack = RGB(0, 0, 0) | (127 << 24); 
             HBRUSH hSemiTransBrush = CreateSolidBrush(semiTransparentBlack);
-            Ellipse(hdc, pt.x - radius, pt.y - radius, pt.x + radius, pt.y + radius);
-            DeleteObject(hSemiTransBrush);
+
+            FillRect(hdc, &rect, hSemiTransBrush);
 
             DeleteObject(hBlackBrush);
             DeleteObject(hRgnCircle);
+            DeleteObject(hSemiTransBrush); // Cleanup
         }
         return 0;
     case WM_HOTKEY:
@@ -37,6 +58,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             return 0;
         }
         break;
+
     case WM_DESTROY:
         UnregisterHotKey(NULL, 1);
         PostQuitMessage(0);
