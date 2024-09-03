@@ -40,7 +40,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             HRGN hRgnFull = CreateRectRgn(0, 0, rect.right, rect.bottom);
             HRGN hRgnCircle = CreateEllipticRgn(pt.x - radius, pt.y - radius, pt.x + radius, pt.y + radius);
             CombineRgn(hRgnFull, hRgnFull, hRgnCircle, RGN_DIFF);
-            SetWindowRgn(hwnd, hRgnFull, TRUE);  // Create flashlight effect
+            SetWindowRgn(hwnd, hRgnFull, TRUE);
 
             COLORREF semiTransparentBlack = RGB(0, 0, 0) | (127 << 24); 
             HBRUSH hSemiTransBrush = CreateSolidBrush(semiTransparentBlack);
@@ -120,3 +120,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     return 0;
 }
 
+// Why am I doing this
